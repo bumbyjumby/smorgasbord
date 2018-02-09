@@ -1,0 +1,194 @@
+import {
+  ITickerBook,
+  IBaseParams,
+  IBalance,
+  ILimitOrder,
+  ILimitOrderResult,
+  ILimitOrderParams,
+  IOpenOrderParams,
+  IOpenOrder,
+  ILookupOrderParams,
+  IOrder,
+  IExchange
+} from "./classes";
+import * as https from "https";
+import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
+import { Observable } from 'rxjs/Rx';
+import * as crypto from 'crypto';
+import * as rp from 'request-promise-native';
+import * as jsonfile from 'jsonfile';
+
+export class Exchange implements IExchange {
+  private interval = 1000; // requests must be min 1 second apart
+  private clientId;
+  private oldT = new Date().getTime();
+  private apiKey;
+  private apiSecret;
+  logger: bunyan;
+  constructor(_logger: bunyan) {
+    this.logger = _logger;
+    let config = jsonfile.readFileSync("exchange.config.json");
+    this.clientId = config.clientId;
+    this.apiKey = config.apiKey;
+    this.apiSecret = config.apiSecret;
+  }
+  getTicker(ticker: string): Observable<ITickerBook> {
+    var options = {
+      method: 'get',
+      uri: 'https://api.quadrigacx.com/v2/ticker',
+      qs: {
+        book: ticker
+      },
+      json: true
+    }
+
+    return Observable.fromPromise(rp(options))
+      .map(res => { res.book = ticker; return res; })
+      .catch(e => {
+        console.dir(e);
+        return Observable.of(e);
+      });
+  }
+  getBalance(): Observable<IBalance> {
+
+    const nonce = Math.ceil((new Date()).getTime()).toString();
+
+    let signature = this.createHash(nonce);
+    let key = this.apiKey;
+
+    let params: IBaseParams = {
+      key: this.apiKey,
+      signature: signature,
+      nonce: nonce
+    };
+    let options = {
+      method: 'POST',
+      uri: 'https://api.quadrigacx.com/v2/balance',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    return Observable.fromPromise(rp(options))
+      .map(res => {
+        return JSON.parse(res);
+      })
+      .catch(e => {
+        return Observable.of(e);
+      });
+  }
+  getOpenOrders(book: string): Observable<IOpenOrder[]> {
+    const nonce = Math.ceil((new Date()).getTime()).toString();
+
+    let signature = this.createHash(nonce);
+    let key = this.apiKey;
+    let params: IOpenOrderParams = {
+      key: this.apiKey,
+      signature: signature,
+      nonce: nonce,
+      book: book
+    }
+    let options = {
+      method: 'POST',
+      uri: 'https://api.quadrigacx.com/v2/open_orders',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    return Observable.fromPromise(rp(options))
+      .map(res => {
+        return JSON.parse(res);
+      })
+      .catch(e => {
+        return Observable.of(e);
+      });
+  }
+  lookupOrder(orderId: number): Observable<IOrder> {
+    const nonce = Math.ceil((new Date()).getTime()).toString();
+    let signature = this.createHash(nonce);
+
+    let params: ILookupOrderParams = <ILookupOrderParams>{
+      key: this.apiKey,
+      signature: signature,
+      nonce: nonce,
+      id: orderId
+    };
+
+    var options = {
+      method: 'POST',
+      uri: 'https://api.quadrigacx.com/v2/lookup_order',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    return Observable.fromPromise(rp(options))
+      .map(res => {
+        return JSON.parse(res);
+      })
+      .catch(e => {
+        return Observable.of(e);
+      });
+  }
+  sell(order: ILimitOrder): Observable<ILimitOrderResult> {
+    const nonce = Math.ceil((new Date()).getTime()).toString();
+    let signature = this.createHash(nonce);
+
+    let params: ILimitOrderParams = <ILimitOrderParams>order;
+    params.key = this.apiKey;
+    params.signature = signature;
+    params.nonce = nonce;
+
+    var options = {
+      method: 'POST',
+      uri: 'https://api.quadrigacx.com/v2/sell',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    return Observable.fromPromise(rp(options))
+      .map(res => {
+        return JSON.parse(res);
+      })
+      .catch(e => {
+        return Observable.of(e);
+      });
+  }
+
+  buy(order: ILimitOrder): Observable<ILimitOrderResult> {
+    const nonce = Math.ceil((new Date()).getTime()).toString();
+    let signature = this.createHash(nonce);
+
+    let params: ILimitOrderParams = <ILimitOrderParams>order;
+    params.key = this.apiKey;
+    params.signature = signature;
+    params.nonce = nonce;
+
+    var options = {
+      method: 'POST',
+      uri: 'https://api.quadrigacx.com/v2/buy',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    return Observable.fromPromise(rp(options))
+      .map(res => {
+        return JSON.parse(res);
+      })
+      .catch(e => {
+        return Observable.of(e);
+      });
+  }
+  // private getNonce():Observable<string>{
+  //   const newT = new Date().getTime();
+  //   const delta = newT-this.oldT;
+  //   if(delta < 1000){
+
+  //   }
+  //   if(time() <= $nonce){
+  //       sleep(1);
+  //   }
+  //   return Math.ceil((new Date()).getTime()/1000).toString();
+  // }
+  private createHash(nonce) {
+
+    let hash = crypto.createHmac('sha256', this.apiSecret)
+      .update(nonce + this.clientId + this.apiKey)
+      .digest('hex');
+    return hash;
+  }
+
+}

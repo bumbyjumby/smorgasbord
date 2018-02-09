@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" ngbDropdownToggle>Toggle dropdown</button>
+        <div ngbDropdownMenu>
+          <button *ngFor="let book of books" class="dropdown-item" (click)="onSelect(book)">{{book}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="currentTicker" class="col">
+    {{currentTicker.last}}
+  </div>
+</div>

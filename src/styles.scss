@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+.even{
+    background-color:rgba($color: #000000, $alpha: 0.1);
+}
+.odd{
+    background-color:white;
+}
