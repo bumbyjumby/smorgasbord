@@ -1,11 +1,15 @@
-<div class="row" *ngIf="openOrders">
-  <div class="col">
+<div class="row mt-2  
+" *ngIf="openOrders">
+  <div class="col m-2">
+    <div>Bids</div>
     <div *ngFor="let bid of openOrders.bids; let odd=odd; let even=even" [ngClass]="{ odd: odd, even:even}" class="row">
       <div class="col-md-6">{{bid[0]}}</div>
       <div class="col-md-6">{{bid[1]}}</div>
     </div>
   </div>
-  <div class="col">
+  
+  <div class="col m-2">
+    <div>Asks</div>
     <div *ngFor="let ask of openOrders.asks; let odd=odd; let even=even" [ngClass]="{ odd: odd, even:even}" class="row">
       <div class="col-md-6">{{ask[0]}}</div>
       <div class="col-md-6">{{ask[1]}}</div>

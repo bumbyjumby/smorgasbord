@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ExchangeService } from '../../exchange/exchange.service';
 import { TickerEntryService } from '../ticker-entry/ticker-entry.service';
 import { ITickerBook, IOpenOrders } from '../../interfaces/iexchange';
+import { IBook } from '../../interfaces/app';
 
 @Component({
   selector: 'trader-public-orders',
@@ -17,8 +18,8 @@ export class PublicOrdersComponent implements OnInit {
 
   ngOnInit() {
   }
-  onBookChanged(book: string) {
-    this.exchangeService.getOpenOrders(book).subscribe(x => {
+  onBookChanged(book: IBook) {
+    this.exchangeService.getOpenOrders(book.book).subscribe(x => {
       this.openOrders = x;
     });
   }

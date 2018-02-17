@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ExchangeService } from '../../exchange/exchange.service';
 import { ITickerBook } from '../../interfaces/iexchange';
 import { TickerEntryService } from './ticker-entry.service';
+import { IBook } from '../../interfaces/app';
+import { Book } from '../../classes/book';
 
 @Component({
   selector: 'trader-ticker-entry',
@@ -10,21 +12,24 @@ import { TickerEntryService } from './ticker-entry.service';
 })
 export class TickerEntryComponent implements OnInit {
 
-  selectedBook: string;
-  books: string[] = ['ltc_cad', 'eth_cad'];
+  selectedBook: Book;
+  books: Book[] = [{ book: 'ltc_cad', description: 'Litecoin (CAD)' }, { book: 'eth_cad', description: 'Ethereum (CAD)' }];
   currentTicker: ITickerBook;
+  inProgress = false;
   constructor(private exchangeService: ExchangeService, private tickerEntryService: TickerEntryService) { }
 
   ngOnInit() {
   }
   onSelect(book) {
     this.selectedBook = book;
-    this.exchangeService.getTicker(this.selectedBook).subscribe(
+    this.inProgress = true;
+    this.exchangeService.getTicker(this.selectedBook.book).subscribe(
       data => {
         this.currentTicker = data;
+        this.inProgress = false;
         this.tickerEntryService.setBook(this.selectedBook);
       },
-      error => console.log(error));
+      error => { this.inProgress = false; console.log(error); });
   }
 
 }

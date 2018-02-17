@@ -7,3 +7,15 @@
 .odd{
     background-color:white;
 }
+// animation-iteration-count:infinite;
+.my-progress-bar{
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+    animation-delay: 0ms;
+    animation-direction: alternate;
+    animation-fill-mode: both;
+    animation-play-state: running;
+    animation-timing-function: linear;
+    animation-name: pop;
+}
+@keyframes pop { from { font-size: .5rem; } to { font-size:1rem; }  }
