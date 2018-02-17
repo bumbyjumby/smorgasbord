@@ -1,16 +1,18 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { ITickerBook } from '../../interfaces/iexchange';
-import { IBook } from '../../interfaces/app';
+import { Exchange } from '../../../../shared/interfaces/iexchange';
 
 @Injectable()
 export class TickerEntryService {
 
-  private bookChanged = new EventEmitter<IBook>();
+  private bookChanged = new EventEmitter<Exchange.IBook>();
   constructor() { }
-  setBook(book: IBook) {
+  setBook(book: Exchange.IBook) {
     this.bookChanged.emit(book);
   }
-  onBookChanged(): EventEmitter<IBook> {
+  onBookChanged(): EventEmitter<Exchange.IBook> {
     return this.bookChanged;
+  }
+  storeTicker(tickerBook: Exchange.ITickerBook) {
+    
   }
 }

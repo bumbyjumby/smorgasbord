@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
-import { IExchange, IOpenOrders, ITickerBook } from '../interfaces/iexchange';
+import { Exchange } from '../../../shared/interfaces/iexchange';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http/src/response';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 @Injectable()
-export class ExchangeService implements IExchange {
+export class ExchangeService implements Exchange.IExchange {
 
   constructor(private http: HttpClient) { }
-  getOpenOrders(ticker: string): Observable<IOpenOrders> {
+  getOpenOrders(ticker: string): Observable<Exchange.IOpenOrders> {
     const options = ticker ?
       { params: new HttpParams().set('book', ticker) } : {};
 
-    return this.http.get<IOpenOrders>('https://api.quadrigacx.com/v2/order_book', options).pipe(
+    return this.http.get<Exchange.IOpenOrders>('https://api.quadrigacx.com/v2/order_book', options).pipe(
       catchError(this.handleError)
     );
   }
-  getTicker(ticker: string): Observable<ITickerBook> {
+  getTicker(ticker: string): Observable<Exchange.ITicker> {
      const options = ticker ?
       { params: new HttpParams().set('book', ticker) } : {};
 
-    return this.http.get<ITickerBook>('https://api.quadrigacx.com/v2/ticker', options).pipe(
+    return this.http.get<Exchange.ITicker>('https://api.quadrigacx.com/v2/ticker', options).pipe(
       catchError(this.handleError)
     );
   }

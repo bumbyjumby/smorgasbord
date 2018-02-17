@@ -1,7 +1,6 @@
-// import { ITickerBook } from "./iexchange";
 // import * as bunyan from "bunyan";
 // export interface IDb{
-//     saveTicker(ticker: ITickerBook);
+//     saveTicker(tickeckerBook);
 //     db: string;
 //     dbUser: string;
 //     dbPass: string;

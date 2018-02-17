@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { Exchange } from '../shared/interfaces/iexchange';
 import { Response, Request } from 'express';
 const router = express.Router();
 
@@ -14,7 +15,8 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/posts', (req, res) => {
-    res.send('post works');
+router.post('/saveTicker/:ticker', (req, res) => {
+    const ticker: Exchange.ITickerBook = req.body;
+    res.send(JSON.stringify(ticker));
 });
 export = router;
