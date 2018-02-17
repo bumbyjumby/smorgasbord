@@ -1,7 +1,7 @@
-{
+{ // This is intended to only compile the api. ng build will build the ui
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "outDir": "./dist/api",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -15,5 +15,8 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "api/**/*"
+  ]
 }
