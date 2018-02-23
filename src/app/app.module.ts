@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { InputModule } from './input/input.module';
 import { ExchangeService } from './exchange/exchange.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DbService } from './db/db.service';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     NgbModule.forRoot()
   ],
-  providers: [ExchangeService],
+  providers: [ExchangeService, DbService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
