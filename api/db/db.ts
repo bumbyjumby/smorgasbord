@@ -6,15 +6,17 @@ export class Db implements IDb {
     // TODO: This doesnt belong here. config file?
     url = 'mongodb://localhost:27017';
     dbName = 'MongoTest';
+    historicalCollectionName = 'historical';
     constructor() {
     }
     saveTicker(tickerBook: Exchange.ITickerBook) {
         MongoClient.connect(this.url, (err, client) => {
             assert.equal(null, err);
-            console.log('connected to mongo');
-
             const db = client.db(this.dbName);
-
+            db.collection(this.historicalCollectionName).insertOne(tickerBook, (insertError, result) => {
+                assert.equal(null, insertError);
+                assert.equal(1, result.insertedCount);
+            });
             client.close();
         });
     }
