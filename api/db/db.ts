@@ -4,9 +4,9 @@ import { MongoClient } from 'mongodb';
 import * as assert from 'assert';
 export class Db implements IDb {
     // TODO: This doesnt belong here. config file?
-    url = 'mongodb://localhost:27017';
-    dbName = 'MongoTest';
-    historicalCollectionName = 'historical';
+    private url = 'mongodb://localhost:27017';
+    private dbName = 'MongoTest';
+    private historicalCollectionName = 'historical';
     constructor() {
     }
     saveTicker(tickerBook: Exchange.ITickerBook) {
